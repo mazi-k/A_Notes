@@ -1,21 +1,23 @@
 package com.example.a_notes.domain;
 
-public class NotesEntity {
+import androidx.annotation.Nullable;
 
+public class NoteEntity {
 
-    private final int id;
+    @Nullable
+    private Integer id;
+
     private String title;
     private String content;
     private String date;
 
-    public NotesEntity(int id, String title, String content, String date) {
-        this.id = id;
+    public NoteEntity(String title, String content, String date) {
         this.title = title;
         this.content = content;
         this.date = date;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -31,6 +33,10 @@ public class NotesEntity {
         return date;
     }
 
+    public void setId(@Nullable Integer id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -42,4 +48,6 @@ public class NotesEntity {
     public void setDate(String date) {
         this.date = date;
     }
+
+
 }
