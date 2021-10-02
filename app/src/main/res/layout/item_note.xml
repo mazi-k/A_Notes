@@ -9,26 +9,26 @@
     android:padding="@dimen/default_margin">
 
     <TextView
-        android:id="@+id/title_text_view"
+        android:id="@+id/item_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Title"
         android:textColor="@color/black"
-        android:textSize="@dimen/item_note_title_text_size"
+        android:textSize="@dimen/note_title_text_size"
         android:maxLines="1"/>
 
     <TextView
-        android:id="@+id/content_text_view"
+        android:id="@+id/item_content_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/half_margin"
         tools:text="subscription"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textSize="@dimen/item_note_content_text_size" />
+        android:textSize="@dimen/note_content_text_size" />
 
     <TextView
-        android:id="@+id/date_text_view"
+        android:id="@+id/item_date_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
