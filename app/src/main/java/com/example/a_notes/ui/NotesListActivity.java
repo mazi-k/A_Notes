@@ -1,14 +1,14 @@
 package com.example.a_notes.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,26 +44,27 @@ public class NotesListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.new_note_menu:
-                openNoteEditScreen();
+                openNoteEditScreen(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void openNoteEditScreen(){
+    private void openNoteEditScreen(@Nullable NoteEntity item) {
         Intent intent = new Intent(this, NoteEditActivity.class);
+        //start for result
         startActivity(intent);
     }
 
-    private void initToolbar(){
+    private void initToolbar() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
-    private void initRecycleView(){
+    private void initRecycleView() {
         recyclerView = findViewById(R.id.recycler_view_note_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -71,11 +72,11 @@ public class NotesListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(this::onItemClick);
     }
 
-    private void onItemClick(NoteEntity note){
-        openNoteEditScreen();
+    private void onItemClick(NoteEntity note) {
+        openNoteEditScreen(note);
     }
 
-    private void generateRepository(){
+    private void generateRepository() {
         notesRepository.createNote(new NoteEntity("Title1", "some text", "20.20.20"));
         notesRepository.createNote(new NoteEntity("Title2", "some text", "20.20.20"));
         notesRepository.createNote(new NoteEntity("Title3", "some text", "20.20.20"));
