@@ -14,7 +14,7 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public TextView titleTextView = itemView.findViewById(R.id.title_text_view);
-    public TextView contentTextView = itemView.findViewById(R.id.content_text_view);
-    public TextView dateTextView = itemView.findViewById(R.id.date_text_view);
+    public TextView titleTextView = itemView.findViewById(R.id.item_title_text_view);
+    public TextView contentTextView = itemView.findViewById(R.id.item_content_text_view);
+    public TextView dateTextView = itemView.findViewById(R.id.item_date_text_view);
 }
