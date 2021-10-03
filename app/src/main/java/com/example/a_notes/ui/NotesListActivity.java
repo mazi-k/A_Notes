@@ -31,6 +31,8 @@ public class NotesListActivity extends AppCompatActivity {
 
     public static String EDIT_NOTE_KEY;
 
+    private int noteIdToChanging;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +97,7 @@ public class NotesListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NoteEditActivity.class);
         EDIT_NOTE_KEY = UPDATE_NOTE_KEY;
         intent.putExtra(EDIT_NOTE_KEY, note);
-        notesRepository.deleteNote(note.getId());
+        noteIdToChanging = note.getId();
         startActivityForResult(intent, UPDATE_NOTE_CODE);
     }
 
@@ -103,7 +105,7 @@ public class NotesListActivity extends AppCompatActivity {
         if (requestCode != NEW_NOTE_CODE) {
             super.onActivityResult(requestCode, resultCode, data);
             NoteEntity note = data.getParcelableExtra(EDIT_NOTE_KEY);
-            notesRepository.createNote(note);
+            notesRepository.updateNote(noteIdToChanging, note);
             adapter.setData(notesRepository.getNotes());
             return;
         }
