@@ -1,5 +1,6 @@
 package com.example.a_notes.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +30,9 @@ public class NoteEditActivity extends AppCompatActivity {
 
         initViews();
 
+        NoteEntity noteEntity = getIntent().getExtras().getParcelable(NotesListActivity.UPDATE_NOTE_KEY);
+        fillNote(noteEntity);
+
         saveNoteButton.setOnClickListener(v -> {
             NoteEntity note = new NoteEntity(
                     titleEditText.getText().toString(),
@@ -52,5 +56,11 @@ public class NoteEditActivity extends AppCompatActivity {
         Date currentDate = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         return dateFormat.format(currentDate);
+    }
+
+    private void fillNote(NoteEntity note){
+        titleEditText.setText(note.getTitle());
+        contentEditText.setText(note.getContent());
+        dateTextView.setText(note.getDate());
     }
 }

@@ -23,6 +23,9 @@ public class NotesListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotesRepository notesRepository = new NotesRepositoryImpl();
     private NotesAdapter adapter = new NotesAdapter();
+    
+    public static final String UPDATE_NOTE_KEY = "UPDATE_NOTE_KEY";
+    private static final int UPDATE_NOTE_CODE = 32;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +49,11 @@ public class NotesListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_note_menu:
-                openNoteEditScreen(null);
+                createNewNote();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void openNoteEditScreen(@Nullable NoteEntity item) {
-        Intent intent = new Intent(this, NoteEditActivity.class);
-        //start for result
-        startActivity(intent);
     }
 
     private void initToolbar() {
@@ -73,23 +70,24 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     private void onItemClick(NoteEntity note) {
-        openNoteEditScreen(note);
+        updateSelectedNote(note);
     }
 
     private void generateRepository() {
         notesRepository.createNote(new NoteEntity("Title1", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title2", "some text", "20.20.20"));
+        notesRepository.createNote(new NoteEntity("Title2", "some text fhuiesrgiesrg kieyvrer ferfguiuefgf kfgiuefbr egueigfuef vkugfuegfurebf kjegiugefrf iufgeiufgir rkufgiuefe ", "20.20.20"));
         notesRepository.createNote(new NoteEntity("Title3", "some text", "20.20.20"));
         notesRepository.createNote(new NoteEntity("Title4", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title5", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title6", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title7", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title8", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title9", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title10", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title11", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title12", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title13", "some text", "20.20.20"));
+    }
 
+    private void createNewNote(){
+
+    }
+
+
+    private void updateSelectedNote(NoteEntity note){
+        Intent intent = new Intent(this, NoteEditActivity.class);
+        intent.putExtra(UPDATE_NOTE_KEY, note);
+        startActivityForResult(intent, UPDATE_NOTE_CODE);
     }
 }
