@@ -23,9 +23,13 @@ public class NotesListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotesRepository notesRepository = new NotesRepositoryImpl();
     private NotesAdapter adapter = new NotesAdapter();
-    
+
+    public static final String NEW_NOTE_KEY = "NEW_NOTE_KEY";
+    private static final int NEW_NOTE_CODE = 12;
     public static final String UPDATE_NOTE_KEY = "UPDATE_NOTE_KEY";
     private static final int UPDATE_NOTE_CODE = 32;
+
+    public static String EDIT_NOTE_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +85,30 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
     private void createNewNote(){
-
+        NoteEntity note = new NoteEntity("", "", "");
+        Intent intent = new Intent(this, NoteEditActivity.class);
+        EDIT_NOTE_KEY = NEW_NOTE_KEY;
+        intent.putExtra(EDIT_NOTE_KEY, note);
+        startActivityForResult(intent, NEW_NOTE_CODE);
     }
 
 
     private void updateSelectedNote(NoteEntity note){
         Intent intent = new Intent(this, NoteEditActivity.class);
-        intent.putExtra(UPDATE_NOTE_KEY, note);
+        EDIT_NOTE_KEY = UPDATE_NOTE_KEY;
+        intent.putExtra(EDIT_NOTE_KEY, note);
         startActivityForResult(intent, UPDATE_NOTE_CODE);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode != NEW_NOTE_CODE){
+            super.onActivityResult(requestCode, resultCode, data);
+            return;
+        }
+
+        if(resultCode == RESULT_OK){
+            NoteEntity note = data.getParcelableExtra(EDIT_NOTE_KEY);
+            notesRepository.createNote(note);
+        }
     }
 }
