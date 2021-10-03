@@ -29,10 +29,7 @@ public class NoteEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note_edit);
 
         initViews();
-
-        NoteEntity noteEntity = getIntent().getExtras().getParcelable(NotesListActivity.EDIT_NOTE_KEY);
-
-        fillNote(noteEntity);
+        getNote();
         onSaveButtonClick();
     }
 
@@ -51,10 +48,15 @@ public class NoteEditActivity extends AppCompatActivity {
         return dateFormat.format(currentDate);
     }
 
+    private void getNote(){
+        NoteEntity noteEntity = getIntent().getExtras().getParcelable(NotesListActivity.EDIT_NOTE_KEY);
+        fillNote(noteEntity);
+    }
+
     private void fillNote(NoteEntity note){
         titleEditText.setText(note.getTitle());
         contentEditText.setText(note.getContent());
-        dateTextView.setText(note.getDate());
+        dateTextView.setText(getCurrentDate());
     }
 
     private void onSaveButtonClick(){
@@ -64,9 +66,8 @@ public class NoteEditActivity extends AppCompatActivity {
                     contentEditText.getText().toString(),
                     dateTextView.getText().toString()
             );
-            //
             Intent intentResult = new Intent();
-            intentResult.putExtra(NotesListActivity.NEW_NOTE_KEY, note);
+            intentResult.putExtra(NotesListActivity.EDIT_NOTE_KEY, note);
             setResult(RESULT_OK, intentResult);
             finish();
         });

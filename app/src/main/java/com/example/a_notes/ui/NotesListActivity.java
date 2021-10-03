@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,11 +80,9 @@ public class NotesListActivity extends AppCompatActivity {
     private void generateRepository() {
         notesRepository.createNote(new NoteEntity("Title1", "some text", "20.20.20"));
         notesRepository.createNote(new NoteEntity("Title2", "some text fhuiesrgiesrg kieyvrer ferfguiuefgf kfgiuefbr egueigfuef vkugfuegfurebf kjegiugefrf iufgeiufgir rkufgiuefe ", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title3", "some text", "20.20.20"));
-        notesRepository.createNote(new NoteEntity("Title4", "some text", "20.20.20"));
     }
 
-    private void createNewNote(){
+    private void createNewNote() {
         NoteEntity note = new NoteEntity("", "", "");
         Intent intent = new Intent(this, NoteEditActivity.class);
         EDIT_NOTE_KEY = NEW_NOTE_KEY;
@@ -93,22 +91,27 @@ public class NotesListActivity extends AppCompatActivity {
     }
 
 
-    private void updateSelectedNote(NoteEntity note){
+    private void updateSelectedNote(NoteEntity note) {
         Intent intent = new Intent(this, NoteEditActivity.class);
         EDIT_NOTE_KEY = UPDATE_NOTE_KEY;
         intent.putExtra(EDIT_NOTE_KEY, note);
+        notesRepository.deleteNote(note.getId());
         startActivityForResult(intent, UPDATE_NOTE_CODE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode != NEW_NOTE_CODE){
+        if (requestCode != NEW_NOTE_CODE) {
             super.onActivityResult(requestCode, resultCode, data);
+            NoteEntity note = data.getParcelableExtra(EDIT_NOTE_KEY);
+            notesRepository.createNote(note);
+            adapter.setData(notesRepository.getNotes());
             return;
         }
 
-        if(resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             NoteEntity note = data.getParcelableExtra(EDIT_NOTE_KEY);
-            notesRepository.createNote(note);
+            notesRepository.createNote(new NoteEntity(note.getTitle(), note.getContent(), note.getDate()));
+            adapter.setData(notesRepository.getNotes());
         }
     }
 }
