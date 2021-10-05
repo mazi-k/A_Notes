@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class NoteEditActivity extends AppCompatActivity {
+public class NoteEditFragment extends AppCompatActivity {
 
     private EditText titleEditText;
     private EditText contentEditText;
@@ -26,7 +26,7 @@ public class NoteEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note_edit);
+        setContentView(R.layout.fragment_note_edit);
 
         initViews();
         getNote();
@@ -49,7 +49,7 @@ public class NoteEditActivity extends AppCompatActivity {
     }
 
     private void getNote(){
-        NoteEntity noteEntity = getIntent().getExtras().getParcelable(NotesListActivity.EDIT_NOTE_KEY);
+        NoteEntity noteEntity = getIntent().getExtras().getParcelable(NotesListFragment.EDIT_NOTE_KEY);
         fillNote(noteEntity);
     }
 
@@ -67,7 +67,7 @@ public class NoteEditActivity extends AppCompatActivity {
                     dateTextView.getText().toString()
             );
             Intent intentResult = new Intent();
-            intentResult.putExtra(NotesListActivity.EDIT_NOTE_KEY, note);
+            intentResult.putExtra(NotesListFragment.EDIT_NOTE_KEY, note);
             setResult(RESULT_OK, intentResult);
             finish();
         });

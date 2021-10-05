@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +17,7 @@ import com.example.a_notes.domain.NoteEntity;
 import com.example.a_notes.domain.NotesRepository;
 import com.example.a_notes.impl.NotesRepositoryImpl;
 
-public class NotesListActivity extends AppCompatActivity {
+public class NotesListFragment extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private NotesRepository notesRepository = new NotesRepositoryImpl();
@@ -36,7 +35,7 @@ public class NotesListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notes_list);
+        setContentView(R.layout.fragment_notes_list);
 
         generateRepository();
 
@@ -86,7 +85,7 @@ public class NotesListActivity extends AppCompatActivity {
 
     private void createNewNote() {
         NoteEntity note = new NoteEntity("", "", "");
-        Intent intent = new Intent(this, NoteEditActivity.class);
+        Intent intent = new Intent(this, NoteEditFragment.class);
         EDIT_NOTE_KEY = NEW_NOTE_KEY;
         intent.putExtra(EDIT_NOTE_KEY, note);
         startActivityForResult(intent, NEW_NOTE_CODE);
@@ -94,7 +93,7 @@ public class NotesListActivity extends AppCompatActivity {
 
 
     private void updateSelectedNote(NoteEntity note) {
-        Intent intent = new Intent(this, NoteEditActivity.class);
+        Intent intent = new Intent(this, NoteEditFragment.class);
         EDIT_NOTE_KEY = UPDATE_NOTE_KEY;
         intent.putExtra(EDIT_NOTE_KEY, note);
         noteIdToChanging = note.getId();
