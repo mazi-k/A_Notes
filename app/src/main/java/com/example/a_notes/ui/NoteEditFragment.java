@@ -1,9 +1,7 @@
 package com.example.a_notes.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -24,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class NoteEditFragment extends Fragment {
 
@@ -33,8 +31,6 @@ public class NoteEditFragment extends Fragment {
     private Button saveNoteButton;
 
     private static final String MESSAGE_KEY = "MESSAGE_KEY";
-    public static final String UPDATE_NOTE_KEY = "UPDATE_NOTE_KEY";
-    public static String TAG = "&&&";
 
     Controller controller;
     FragmentManager fragmentManager;
@@ -46,10 +42,10 @@ public class NoteEditFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof NotesListFragment.Controller)
-            controller = (NoteEditFragment.Controller) context;
+        if (context instanceof Controller)
+            controller = (Controller) context;
         else
-            throw new IllegalStateException("Activity bla bla bla");
+            throw new IllegalStateException("Activity IllegalStateException");
     }
 
     @Nullable
@@ -61,12 +57,11 @@ public class NoteEditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         initViews(view);
         getNote();
         onSaveButtonClick();
     }
-
 
     private void initViews(@NonNull View view){
         titleEditText = view.findViewById(R.id.note_title_edit_text);
@@ -78,8 +73,13 @@ public class NoteEditFragment extends Fragment {
     }
 
     private void getNote(){
-        NoteEntity noteEntity = getArguments().getParcelable(MESSAGE_KEY);
-        fillNote(noteEntity);
+        NoteEntity noteEntity = null;
+        if (getArguments() != null) {
+            noteEntity = getArguments().getParcelable(MESSAGE_KEY);
+        }
+        if (noteEntity != null) {
+            fillNote(noteEntity);
+        }
     }
 
     private void fillNote(NoteEntity note){
@@ -96,7 +96,6 @@ public class NoteEditFragment extends Fragment {
                     dateTextView.getText().toString()
             );
             controller.saveNote(note);
-            Log.d(TAG, "onSaveButtonClick() called " + note.getTitle());
         });
     }
 
@@ -107,7 +106,6 @@ public class NoteEditFragment extends Fragment {
         noteEditFragment.setArguments(bundle);
         return noteEditFragment;
     }
-
 
     private String getCurrentDate(){
         Date currentDate = new Date();

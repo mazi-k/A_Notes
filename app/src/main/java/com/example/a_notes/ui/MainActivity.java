@@ -1,13 +1,7 @@
 package com.example.a_notes.ui;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,7 +12,6 @@ import com.example.a_notes.R;
 import com.example.a_notes.domain.NoteEntity;
 
 public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
-    private static final String TAG = "###";
 
     private boolean isLandscape = false;
 
@@ -51,24 +44,6 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             }
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.notes_list_menu, menu);
-        return true;
-    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.new_note_menu:
-//                NotesListFragment.createNewNote();
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);

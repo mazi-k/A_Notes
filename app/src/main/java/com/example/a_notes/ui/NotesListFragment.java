@@ -1,10 +1,7 @@
 package com.example.a_notes.ui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +20,13 @@ import com.example.a_notes.impl.NotesRepositoryImpl;
 
 public class NotesListFragment extends Fragment {
     private RecyclerView recyclerView;
-    private NotesRepository notesRepository = new NotesRepositoryImpl();
-    private NotesAdapter adapter = new NotesAdapter();
+    private final NotesRepository notesRepository = new NotesRepositoryImpl();
+    private final NotesAdapter adapter = new NotesAdapter();
 
     private static Controller controller;
     FragmentManager fragmentManager;
 
-    public static final String NEW_NOTE_KEY = "NEW_NOTE_KEY";
-    private static final int NEW_NOTE_CODE = 12;
     public static final String UPDATE_NOTE_KEY = "UPDATE_NOTE_KEY";
-    private static final int UPDATE_NOTE_CODE = 32;
-
-    public static String EDIT_NOTE_KEY;
-    public static String TAG = "&&&";
 
     private int noteIdToChanging;
 
@@ -49,16 +40,24 @@ public class NotesListFragment extends Fragment {
             throw new IllegalStateException("Activity bla bla bla");
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fragmentManager = requireActivity().getSupportFragmentManager();
+        getUpdatedNote();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_notes_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fragmentManager = getActivity().getSupportFragmentManager();
+
         initRecycleView(view);
         initSaveButton(view);
     }
@@ -76,9 +75,7 @@ public class NotesListFragment extends Fragment {
     }
 
     private void initSaveButton(View view) {
-        view.findViewById(R.id.new_note_button).setOnClickListener(v -> {
-            createNewNote();
-        });
+        view.findViewById(R.id.new_note_button).setOnClickListener(v -> createNewNote());
     }
 
     private void onItemClick(NoteEntity note) {
@@ -87,20 +84,19 @@ public class NotesListFragment extends Fragment {
 
     public static void createNewNote() {
         NoteEntity note = new NoteEntity("", "", "");
-        if(controller != null){
+        if (controller != null) {
             controller.showNote(note);
         }
     }
 
     private void updateSelectedNote(NoteEntity note) {
         noteIdToChanging = note.getId();
-        if(controller != null){
+        if (controller != null) {
             controller.showNote(note);
         }
-
     }
 
-    public static NotesListFragment newInstance(NoteEntity noteEntity){
+    public static NotesListFragment newInstance(NoteEntity noteEntity) {
         NotesListFragment notesListFragment = new NotesListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(UPDATE_NOTE_KEY, noteEntity);
@@ -108,16 +104,15 @@ public class NotesListFragment extends Fragment {
         return notesListFragment;
     }
 
-    private void getNote(){
+    private void getUpdatedNote() {
         NoteEntity noteEntity = null;
         if (getArguments() != null) {
             noteEntity = getArguments().getParcelable(UPDATE_NOTE_KEY);
         }
         if (noteEntity != null) {
-            Log.d(TAG, "getNote() called " + noteEntity.getTitle());
+            notesRepository.updateNote(noteIdToChanging, noteEntity);
+            adapter.setData(notesRepository.getNotes());
         }
-        notesRepository.createNote(noteEntity);
-        adapter.setData(notesRepository.getNotes());
     }
 
     interface Controller {
