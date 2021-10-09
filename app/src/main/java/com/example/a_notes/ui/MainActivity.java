@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.a_notes.R;
 import com.example.a_notes.domain.NoteEntity;
 
-public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller {
+public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
     private static final String TAG = "###";
 
     private boolean isLandscape = false;
@@ -59,16 +59,16 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.new_note_menu:
-                NotesListFragment.createNewNote();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.new_note_menu:
+//                NotesListFragment.createNewNote();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     private void initToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -88,5 +88,20 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                     .addToBackStack(null)
                     .commit();
         }
+    }
+
+    @Override
+    public void saveNote(NoteEntity noteEntity) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (isLandscape) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_list, NotesListFragment.newInstance(noteEntity))
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, NotesListFragment.newInstance(noteEntity))
+                    .commit();
+        }
+
     }
 }

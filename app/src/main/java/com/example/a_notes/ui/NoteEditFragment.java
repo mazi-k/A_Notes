@@ -1,7 +1,9 @@
 package com.example.a_notes.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
 import com.example.a_notes.domain.NoteEntity;
@@ -30,9 +33,23 @@ public class NoteEditFragment extends Fragment {
     private Button saveNoteButton;
 
     private static final String MESSAGE_KEY = "MESSAGE_KEY";
+    public static final String UPDATE_NOTE_KEY = "UPDATE_NOTE_KEY";
+    public static String TAG = "&&&";
+
+    Controller controller;
+    FragmentManager fragmentManager;
 
     public NoteEditFragment(){
 
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof NotesListFragment.Controller)
+            controller = (NoteEditFragment.Controller) context;
+        else
+            throw new IllegalStateException("Activity bla bla bla");
     }
 
     @Nullable
@@ -44,12 +61,7 @@ public class NoteEditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        textView = view.findViewById(R.id.some_text_tv);
-//
-//        Bundle args = getArguments();
-//        String message = args.getString(MESSAGE_KEY);
-//        textView.setText(message);
-
+        fragmentManager = getActivity().getSupportFragmentManager();
         initViews(view);
         getNote();
         onSaveButtonClick();
@@ -83,10 +95,8 @@ public class NoteEditFragment extends Fragment {
                     contentEditText.getText().toString(),
                     dateTextView.getText().toString()
             );
-//            Intent intentResult = new Intent();
-//            intentResult.putExtra(NotesListFragment.EDIT_NOTE_KEY, note);
-//            setResult(RESULT_OK, intentResult);
-//            finish();
+            controller.saveNote(note);
+            Log.d(TAG, "onSaveButtonClick() called " + note.getTitle());
         });
     }
 
@@ -103,5 +113,9 @@ public class NoteEditFragment extends Fragment {
         Date currentDate = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
         return dateFormat.format(currentDate);
+    }
+
+    interface Controller {
+        void saveNote(NoteEntity noteEntity);
     }
 }
