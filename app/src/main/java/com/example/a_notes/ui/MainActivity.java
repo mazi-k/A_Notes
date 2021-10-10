@@ -1,10 +1,10 @@
 package com.example.a_notes.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -14,14 +14,16 @@ import com.example.a_notes.domain.NoteEntity;
 public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
 
     private boolean isLandscape = false;
+    private final String TAG = "@@@ Main";
+    private boolean isFirstLaunch = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initToolbar();
-        createListFragment();
+        if (isFirstLaunch)
+            createListFragment();
     }
 
     private void createListFragment() {
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new NotesListFragment())
                         .commit();
+                Log.d(TAG, "createListFragment() called");
             }
         } else {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -41,13 +44,10 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_list, new NotesListFragment())
                         .commit();
+                Log.d(TAG, "createListFragment() land called");
             }
         }
-    }
-
-    private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        isFirstLaunch = false;
     }
 
     @Override
@@ -57,11 +57,13 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_content, NoteEditFragment.newInstance(noteEntity))
                     .commit();
+            Log.d(TAG, "showNote() land called with: noteEntity = [" + noteEntity.getId() + "]");
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, NoteEditFragment.newInstance(noteEntity))
                     .addToBackStack(null)
                     .commit();
+            Log.d(TAG, "showNote() called with: noteEntity = [" + noteEntity.getId() + "]");
         }
     }
 
@@ -72,10 +74,12 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_list, NotesListFragment.newInstance(noteEntity))
                     .commit();
+            Log.d(TAG, "saveNote() land called with: noteEntity = [" + noteEntity.getId() + "]");
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, NotesListFragment.newInstance(noteEntity))
                     .commit();
+            Log.d(TAG, "saveNote() called with: noteEntity = [" + noteEntity.getId() + "]");
         }
 
     }
