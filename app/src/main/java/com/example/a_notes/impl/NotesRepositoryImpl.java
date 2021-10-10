@@ -21,8 +21,7 @@ public class NotesRepositoryImpl implements NotesRepository {
     @Nullable
     @Override
     public Integer createNote(NoteEntity note) {
-        //int newId = ++counter;
-        int newId = cache.size() + 1;
+        int newId = ++counter;
         note.setId(newId);
         cache.add(note);
         return newId;
