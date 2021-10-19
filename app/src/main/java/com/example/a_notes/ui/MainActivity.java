@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
+import com.example.a_notes.domain.App;
 import com.example.a_notes.domain.NoteEntity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -114,6 +115,5 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                     .commit();
             Log.d(TAG, "saveNote() called with: noteEntity = [" + noteEntity.getId() + "]");
         }
-
     }
 }
