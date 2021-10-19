@@ -2,6 +2,7 @@ package com.example.a_notes.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +36,8 @@ public class NoteEditFragment extends Fragment {
     Controller controller;
     FragmentManager fragmentManager;
 
-    public NoteEditFragment(){
+    private Integer sendingId;
 
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -76,6 +76,7 @@ public class NoteEditFragment extends Fragment {
         NoteEntity noteEntity = null;
         if (getArguments() != null) {
             noteEntity = getArguments().getParcelable(MESSAGE_KEY);
+            sendingId = noteEntity.getId();
         }
         if (noteEntity != null) {
             fillNote(noteEntity);
@@ -91,6 +92,7 @@ public class NoteEditFragment extends Fragment {
     private void onSaveButtonClick(){
         saveNoteButton.setOnClickListener(v -> {
             NoteEntity note = new NoteEntity(
+                    sendingId,
                     titleEditText.getText().toString(),
                     contentEditText.getText().toString(),
                     dateTextView.getText().toString()

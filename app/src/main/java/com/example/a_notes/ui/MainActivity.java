@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
+import com.example.a_notes.domain.App;
 import com.example.a_notes.domain.NoteEntity;
 
 public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
@@ -81,6 +82,5 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                     .commit();
             Log.d(TAG, "saveNote() called with: noteEntity = [" + noteEntity.getId() + "]");
         }
-
     }
 }
