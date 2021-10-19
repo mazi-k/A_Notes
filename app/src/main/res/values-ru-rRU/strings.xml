@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Заметочки</string>
+    <string name="menu_item_create_note">Создать заметку</string>
+    <string name="title_hint">Заголовок</string>
+    <string name="content_hint">Содержание</string>
+    <string name="save_text_button">Сохранить</string>
+    <string name="new_note_btn_text">Новая заметка</string>
+    <string name="list">Заметки</string>
+    <string name="about">О программе</string>
+    <string name="settings">Настройки</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Какой-то фрагмент</string>
+</resources>
