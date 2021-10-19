@@ -10,6 +10,12 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
 import com.example.a_notes.domain.NoteEntity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 
 public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
 
@@ -17,13 +23,40 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     private final String TAG = "@@@ Main";
     private boolean isFirstLaunch = true;
 
+    private BottomNavigationView bottomNavigationView;
+    private Map<Integer, Fragment> fragmentMap = fillFragments();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (isFirstLaunch)
+        initNavigationView();
+
+        if (isFirstLaunch){
             createListFragment();
+        }
+    }
+
+    private Map<Integer, Fragment> fillFragments() {
+        Map<Integer, Fragment> fragments = new HashMap<>();
+        fragments.put(R.id.menu_item_list, new NotesListFragment());
+        fragments.put(R.id.menu_item_about, new AboutFragment());
+        fragments.put(R.id.menu_item_settings, new SettingsFragment());
+        return  fragments;
+    }
+
+    private void initNavigationView() {
+        bottomNavigationView = findViewById(R.id.bottom_nav_view);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                    .commit();
+            return true;
+        });
+        bottomNavigationView.setSelectedItemId(R.id.menu_item_list);
     }
 
     private void createListFragment() {
