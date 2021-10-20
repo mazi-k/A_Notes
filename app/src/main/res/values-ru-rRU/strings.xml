@@ -13,8 +13,4 @@
     <string name="hello_blank_fragment">Какой-то фрагмент</string>
     <string name="delete">Удалить</string>
     <string name="update">Изменить</string>
-    <string name="alert">Предупреждение</string>
-    <string name="message">Вы уверены?</string>
-    <string name="answer_yes">Да</string>
-    <string name="answer_no">Нет</string>
 </resources>
