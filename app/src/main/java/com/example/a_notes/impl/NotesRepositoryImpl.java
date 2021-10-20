@@ -32,6 +32,7 @@ public class NotesRepositoryImpl implements NotesRepository {
         for (int i = 0; i < cache.size(); i++){
             if(cache.get(i).getId() == id){
                 cache.remove(i);
+                --counter;
                 return true;
             }
         }

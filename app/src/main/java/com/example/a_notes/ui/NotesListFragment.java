@@ -2,7 +2,6 @@ package com.example.a_notes.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,15 +16,15 @@ import com.example.a_notes.R;
 import com.example.a_notes.domain.App;
 import com.example.a_notes.domain.NoteEntity;
 import com.example.a_notes.domain.NotesRepository;
-import com.example.a_notes.impl.NotesRepositoryImpl;
-
-import java.util.Objects;
 
 public class NotesListFragment extends Fragment {
     private RecyclerView recyclerView;
-    private final NotesAdapter adapter = new NotesAdapter();
 
     private NotesRepository notesRepository;
+
+    private final NotesAdapter adapter = new NotesAdapter(note -> {
+        showNoteContextMenu(note);
+    });
 
     private static Controller controller;
 
@@ -72,17 +70,17 @@ public class NotesListFragment extends Fragment {
     private void initRecycleView(@NonNull View view) {
         recyclerView = view.findViewById(R.id.recycler_view_note_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        recyclerView.setOnCreateContextMenuListener((menu, v, menuInfo) ->
+                getActivity().getMenuInflater().inflate(R.menu.context_menu, menu));
+
         recyclerView.setAdapter(adapter);
         adapter.setData(notesRepository.getNotes());
-        adapter.setOnItemClickListener(this::onItemClick);
+        //adapter.notifyDataSetChanged();
     }
 
     private void initNewNoteButton(View view) {
         view.findViewById(R.id.new_note_button).setOnClickListener(v -> createNewNote());
-    }
-
-    private void onItemClick(NoteEntity note) {
-        updateSelectedNote(note);
     }
 
     public static void createNewNote() {
@@ -126,6 +124,29 @@ public class NotesListFragment extends Fragment {
                     break;
             }
         }
+    }
+
+    private void showNoteContextMenu(NoteEntity note) {
+        recyclerView.setOnCreateContextMenuListener(((menu, v, menuInfo) -> {
+            getActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
+
+            menu.findItem(R.id.action_delete).setOnMenuItemClickListener(item -> {
+                deleteNote(note);
+                return true;
+            });
+
+            menu.findItem(R.id.action_update).setOnMenuItemClickListener(item -> {
+                updateSelectedNote(note);
+                return true;
+            });
+        }));
+
+        recyclerView.showContextMenu();
+    }
+
+    private void deleteNote(NoteEntity note) {
+        notesRepository.deleteNote(note.getId());
+//        adapter.notifyDataSetChanged();
     }
 
     private App getApp(){
