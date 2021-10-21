@@ -2,8 +2,10 @@ package com.example.a_notes.ui;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
 
     private boolean isLandscape = false;
     private boolean isFirstLaunch = true;
+    private boolean isAlertAnswerYes = false;
 
     private BottomNavigationView bottomNavigationView;
     private Map<Integer, Fragment> fragmentMap = fillFragments();
@@ -36,6 +39,30 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         if (isFirstLaunch){
             createListFragment();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showAlert();
+
+        super.onBackPressed();
+    }
+
+    private void showAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.alert)
+                .setMessage(R.string.message)
+                .setPositiveButton(R.string.answer_yes, ((dialog, which) -> {
+                    Toast.makeText(this, "YES " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
+                    isAlertAnswerYes = true;
+                }))
+                .setNegativeButton(R.string.answer_no, ((dialog, which) -> {
+                    Toast.makeText(this, "NO " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
+                    isAlertAnswerYes = false;
+                }))
+                .setCancelable(false)
+                .show();
+
     }
 
     private Map<Integer, Fragment> fillFragments() {

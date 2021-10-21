@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +37,8 @@ public class NotesListFragment extends Fragment {
     public static final String NOTE_ACTION_UPDATE = "UPDATE";
 
     private static int noteIdToChanging;
+
+    private boolean isAlertAnswerYes = true;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -66,6 +70,8 @@ public class NotesListFragment extends Fragment {
         initRecycleView(view);
         initNewNoteButton(view);
     }
+
+
 
     private void initRecycleView(@NonNull View view) {
         recyclerView = view.findViewById(R.id.recycler_view_note_list);
@@ -131,7 +137,9 @@ public class NotesListFragment extends Fragment {
             getActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
 
             menu.findItem(R.id.action_delete).setOnMenuItemClickListener(item -> {
-                deleteNote(note);
+                showAlert();
+                if (isAlertAnswerYes)
+                    deleteNote(note);
                 return true;
             });
 
@@ -147,6 +155,23 @@ public class NotesListFragment extends Fragment {
     private void deleteNote(NoteEntity note) {
         notesRepository.deleteNote(note.getId());
 //        adapter.notifyDataSetChanged();
+    }
+
+    private void showAlert(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.alert)
+                .setMessage(R.string.message)
+                .setPositiveButton(R.string.answer_yes, ((dialog, which) -> {
+                    Toast.makeText(getActivity(), "YES " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
+                    isAlertAnswerYes = true;
+                }))
+                .setNegativeButton(R.string.answer_no, ((dialog, which) -> {
+                    Toast.makeText(getActivity(), "NO " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
+                    isAlertAnswerYes = false;
+                }))
+                .setCancelable(false)
+                .show();
+
     }
 
     private App getApp(){
