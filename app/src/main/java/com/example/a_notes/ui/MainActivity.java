@@ -2,10 +2,8 @@ package com.example.a_notes.ui;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -24,7 +22,6 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
 
     private boolean isLandscape = false;
     private boolean isFirstLaunch = true;
-    private boolean isAlertAnswerYes = false;
 
     private BottomNavigationView bottomNavigationView;
     private Map<Integer, Fragment> fragmentMap = fillFragments();
@@ -34,35 +31,11 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initNavigationView();
+
         if (isFirstLaunch){
             createListFragment();
         }
-
-        initNavigationView();
-    }
-
-    @Override
-    public void onBackPressed() {
-        showAlert();
-
-        super.onBackPressed();
-    }
-
-    private void showAlert() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.alert)
-                .setMessage(R.string.message)
-                .setPositiveButton(R.string.answer_yes, ((dialog, which) -> {
-                    Toast.makeText(this, "YES " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
-                    isAlertAnswerYes = true;
-                }))
-                .setNegativeButton(R.string.answer_no, ((dialog, which) -> {
-                    Toast.makeText(this, "NO " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
-                    isAlertAnswerYes = false;
-                }))
-                .setCancelable(false)
-                .show();
-
     }
 
     private Map<Integer, Fragment> fillFragments() {
@@ -74,12 +47,12 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     }
 
     private void initNavigationView() {
-        if (isLandscape){
+        if (!isLandscape){
             bottomNavigationView = findViewById(R.id.bottom_nav_view);
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container_content, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
                         .commit();
                 return true;
             });
@@ -88,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .replace(R.id.main_view, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
                         .commit();
                 return true;
             });
