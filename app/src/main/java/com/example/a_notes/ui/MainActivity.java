@@ -47,16 +47,27 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     }
 
     private void initNavigationView() {
-        bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        if (!isLandscape){
+            bottomNavigationView = findViewById(R.id.bottom_nav_view);
+            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .commit();
+                return true;
+            });
+        } else {
+            bottomNavigationView = findViewById(R.id.bottom_nav_view);
+            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_view, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .commit();
+                return true;
+            });
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
-                    .commit();
-            return true;
-        });
-        bottomNavigationView.setSelectedItemId(R.id.menu_item_list);
+            bottomNavigationView.setSelectedItemId(R.id.menu_item_list);
+        }
     }
 
     private void createListFragment() {
