@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .replace(R.id.fragment_container_content, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
                         .commit();
                 return true;
             });
