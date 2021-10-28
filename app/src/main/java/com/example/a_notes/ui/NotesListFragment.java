@@ -38,7 +38,6 @@ public class NotesListFragment extends Fragment {
 
     private static int noteIdToChanging;
 
-    private boolean isAlertAnswerYes = true;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -69,8 +68,6 @@ public class NotesListFragment extends Fragment {
         initRecycleView(view);
         initNewNoteButton(view);
     }
-
-
 
     private void initRecycleView(@NonNull View view) {
         recyclerView = view.findViewById(R.id.recycler_view_note_list);
@@ -135,9 +132,7 @@ public class NotesListFragment extends Fragment {
             getActivity().getMenuInflater().inflate(R.menu.context_menu, menu);
 
             menu.findItem(R.id.action_delete).setOnMenuItemClickListener(item -> {
-                showAlert();
-                if (isAlertAnswerYes)
-                    deleteNote(note);
+                showAlertForDeletingNote(note);
                 return true;
             });
 
@@ -156,19 +151,16 @@ public class NotesListFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private void showAlert(){
+    private void showAlertForDeletingNote(NoteEntity note){
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.alert)
                 .setMessage(R.string.message)
                 .setPositiveButton(R.string.answer_yes, ((dialog, which) -> {
-                    Toast.makeText(getActivity(), "YES " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
-                    isAlertAnswerYes = true;
+                    deleteNote(note);
                 }))
                 .setNegativeButton(R.string.answer_no, ((dialog, which) -> {
-                    Toast.makeText(getActivity(), "NO " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
-                    isAlertAnswerYes = false;
+                    Toast.makeText(getActivity(), "Okay:)", Toast.LENGTH_SHORT).show();
                 }))
-                .setCancelable(false)
                 .show();
 
     }
