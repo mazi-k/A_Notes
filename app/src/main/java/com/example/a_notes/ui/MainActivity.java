@@ -31,11 +31,11 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initNavigationView();
-
         if (isFirstLaunch){
             createListFragment();
         }
+
+        initNavigationView();
     }
 
     private Map<Integer, Fragment> fillFragments() {
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     }
 
     private void initNavigationView() {
-        if (!isLandscape){
+        if (isLandscape){
             bottomNavigationView = findViewById(R.id.bottom_nav_view);
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main_view, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
                         .commit();
                 return true;
             });
