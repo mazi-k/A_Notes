@@ -62,7 +62,6 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initRecycleView(view);
         initNewNoteButton(view);
     }
@@ -76,7 +75,6 @@ public class NotesListFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
         adapter.setData(notesRepository.getNotes());
-        //adapter.notifyDataSetChanged();
     }
 
     private void initNewNoteButton(View view) {
@@ -146,8 +144,10 @@ public class NotesListFragment extends Fragment {
 
     private void deleteNote(NoteEntity note) {
         notesRepository.deleteNote(note.getId());
-//        adapter.notifyDataSetChanged();
+        adapter.setData(notesRepository.getNotes());
+        adapter.notifyDataSetChanged();
     }
+
 
     private App getApp(){
         return (App) requireActivity().getApplication();
