@@ -2,33 +2,29 @@ package com.example.a_notes.ui;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
+import com.example.a_notes.domain.App;
 import com.example.a_notes.domain.NoteEntity;
 
-public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller {
-    private static final String TAG = "###";
+public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
 
     private boolean isLandscape = false;
+    private final String TAG = "@@@ Main";
+    private boolean isFirstLaunch = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initToolbar();
-        createListFragment();
+        if (isFirstLaunch)
+            createListFragment();
     }
 
     private void createListFragment() {
@@ -40,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new NotesListFragment())
                         .commit();
+                Log.d(TAG, "createListFragment() called");
             }
         } else {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -48,31 +45,10 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container_list, new NotesListFragment())
                         .commit();
+                Log.d(TAG, "createListFragment() land called");
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.notes_list_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.new_note_menu:
-                NotesListFragment.createNewNote();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        isFirstLaunch = false;
     }
 
     @Override
@@ -82,11 +58,29 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container_content, NoteEditFragment.newInstance(noteEntity))
                     .commit();
+            Log.d(TAG, "showNote() land called with: noteEntity = [" + noteEntity.getId() + "]");
         } else {
             fragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, NoteEditFragment.newInstance(noteEntity))
                     .addToBackStack(null)
                     .commit();
+            Log.d(TAG, "showNote() called with: noteEntity = [" + noteEntity.getId() + "]");
+        }
+    }
+
+    @Override
+    public void saveNote(NoteEntity noteEntity) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (isLandscape) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_list, NotesListFragment.newInstance(noteEntity))
+                    .commit();
+            Log.d(TAG, "saveNote() land called with: noteEntity = [" + noteEntity.getId() + "]");
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, NotesListFragment.newInstance(noteEntity))
+                    .commit();
+            Log.d(TAG, "saveNote() called with: noteEntity = [" + noteEntity.getId() + "]");
         }
     }
 }
