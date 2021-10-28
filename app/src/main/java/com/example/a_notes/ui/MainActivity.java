@@ -1,7 +1,6 @@
 package com.example.a_notes.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
-import com.example.a_notes.domain.App;
 import com.example.a_notes.domain.NoteEntity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,18 +22,18 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     private boolean isFirstLaunch = true;
 
     private BottomNavigationView bottomNavigationView;
-    private Map<Integer, Fragment> fragmentMap = fillFragments();
+    private final Map<Integer, Fragment> fragmentMap = fillFragments();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initNavigationView();
-
-        if (isFirstLaunch){
+        if (isFirstLaunch) {
             createListFragment();
         }
+
+        initNavigationView();
     }
 
     private Map<Integer, Fragment> fillFragments() {
@@ -43,11 +41,11 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         fragments.put(R.id.menu_item_list, new NotesListFragment());
         fragments.put(R.id.menu_item_about, new AboutFragment());
         fragments.put(R.id.menu_item_settings, new SettingsFragment());
-        return  fragments;
+        return fragments;
     }
 
     private void initNavigationView() {
-        if (!isLandscape){
+        if (isLandscape) {
             bottomNavigationView = findViewById(R.id.bottom_nav_view);
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
             bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.main_view, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
                         .commit();
                 return true;
             });
