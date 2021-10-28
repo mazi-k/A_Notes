@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="note_title_text_size">30sp</dimen>
+    <dimen name="note_content_text_size">20sp</dimen>
+    <dimen name="item_note_date_text_size">10sp</dimen>
+
+
+
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="half_margin">8dp</dimen>
+
+</resources>
