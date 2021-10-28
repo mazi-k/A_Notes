@@ -11,4 +11,6 @@
     <string name="settings">Настройки</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Какой-то фрагмент</string>
+    <string name="delete">Удалить</string>
+    <string name="update">Изменить</string>
 </resources>
