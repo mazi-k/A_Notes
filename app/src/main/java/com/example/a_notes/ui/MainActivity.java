@@ -1,7 +1,6 @@
 package com.example.a_notes.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,12 +20,10 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
 
+    private final Map<Integer, Fragment> fragmentMap = fillFragments();
     private boolean isLandscape = false;
     private boolean isFirstLaunch = true;
-    private boolean isAlertAnswerYes = false;
-
     private BottomNavigationView bottomNavigationView;
-    private final Map<Integer, Fragment> fragmentMap = fillFragments();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,8 +40,6 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
     @Override
     public void onBackPressed() {
         showAlert();
-
-        super.onBackPressed();
     }
 
     private void showAlert() {
@@ -52,16 +47,19 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                 .setTitle(R.string.alert)
                 .setMessage(R.string.message)
                 .setPositiveButton(R.string.answer_yes, ((dialog, which) -> {
-                    Toast.makeText(this, "YES " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
-                    isAlertAnswerYes = true;
+                    showToast("Come back, we are waiting for you ^.^");
+                    super.onBackPressed();
                 }))
                 .setNegativeButton(R.string.answer_no, ((dialog, which) -> {
-                    Toast.makeText(this, "NO " + isAlertAnswerYes, Toast.LENGTH_SHORT).show();
-                    isAlertAnswerYes = false;
+                    showToast("Okay!");
                 }))
                 .setCancelable(false)
                 .show();
+    }
 
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private Map<Integer, Fragment> fillFragments() {
