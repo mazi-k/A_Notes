@@ -5,4 +5,15 @@
     <string name="content_hint">Content</string>
     <string name="save_text_button">Save</string>
     <string name="new_note_btn_text">New note</string>
+    <string name="list">List</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="alert">Alert</string>
+    <string name="message">Are you sure?</string>
+    <string name="answer_yes">Yes</string>
+    <string name="answer_no">No</string>
 </resources>
