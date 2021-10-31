@@ -121,11 +121,11 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (isLandscape) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_content, NoteEditFragment.newInstance(noteEntity))
+                    .replace(R.id.fragment_container_content, NoteEditFragment.ObjectWithStatic.newInstance(noteEntity))
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, NoteEditFragment.newInstance(noteEntity))
+                    .replace(R.id.fragment_container, NoteEditFragment.ObjectWithStatic.newInstance(noteEntity))
                     .addToBackStack(null)
                     .commit();
         }
@@ -136,11 +136,11 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (isLandscape) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_list, NotesListFragment.newInstance(noteEntity))
+                    .replace(R.id.fragment_container_list, NotesListFragment.ObjectWithStatic.newInstance(noteEntity))
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, NotesListFragment.newInstance(noteEntity))
+                    .replace(R.id.fragment_container, NotesListFragment.ObjectWithStatic.newInstance(noteEntity))
                     .commit();
         }
     }
