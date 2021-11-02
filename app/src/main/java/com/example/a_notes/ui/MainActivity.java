@@ -1,34 +1,97 @@
 package com.example.a_notes.ui;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.a_notes.R;
 import com.example.a_notes.domain.NoteEntity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller {
-    private static final String TAG = "###";
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
+
+public class MainActivity extends AppCompatActivity implements NotesListFragment.Controller, NoteEditFragment.Controller {
+
+    private final Map<Integer, Fragment> fragmentMap = fillFragments();
     private boolean isLandscape = false;
+    private boolean isFirstLaunch = true;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initToolbar();
-        createListFragment();
+        if (isFirstLaunch) {
+            createListFragment();
+        }
+
+        initNavigationView();
+    }
+
+    @Override
+    public void onBackPressed() {
+        showAlert();
+    }
+
+    private void showAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.alert)
+                .setMessage(R.string.message)
+                .setPositiveButton(R.string.answer_yes, ((dialog, which) -> {
+                    showToast("Come back, we are waiting for you ^.^");
+                    super.onBackPressed();
+                }))
+                .setNegativeButton(R.string.answer_no, ((dialog, which) -> {
+                    showToast("Okay!");
+                }))
+                .setCancelable(false)
+                .show();
+    }
+
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private Map<Integer, Fragment> fillFragments() {
+        Map<Integer, Fragment> fragments = new HashMap<>();
+        fragments.put(R.id.menu_item_list, new NotesListFragment());
+        fragments.put(R.id.menu_item_about, new AboutFragment());
+        fragments.put(R.id.menu_item_settings, new SettingsFragment());
+        return fragments;
+    }
+
+    private void initNavigationView() {
+        if (isLandscape) {
+            bottomNavigationView = findViewById(R.id.bottom_nav_view);
+            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container_content, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .commit();
+                return true;
+            });
+        } else {
+            bottomNavigationView = findViewById(R.id.bottom_nav_view);
+            bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, Objects.requireNonNull(fragmentMap.get(item.getItemId())))
+                        .commit();
+                return true;
+            });
+
+            bottomNavigationView.setSelectedItemId(R.id.menu_item_list);
+        }
     }
 
     private void createListFragment() {
@@ -50,29 +113,7 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
                         .commit();
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.notes_list_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.new_note_menu:
-                NotesListFragment.createNewNote();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void initToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        isFirstLaunch = false;
     }
 
     @Override
@@ -80,12 +121,26 @@ public class MainActivity extends AppCompatActivity implements NotesListFragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (isLandscape) {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container_content, NoteEditFragment.newInstance(noteEntity))
+                    .replace(R.id.fragment_container_content, NoteEditFragment.ObjectWithStatic.newInstance(noteEntity))
                     .commit();
         } else {
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, NoteEditFragment.newInstance(noteEntity))
+                    .replace(R.id.fragment_container, NoteEditFragment.ObjectWithStatic.newInstance(noteEntity))
                     .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void saveNote(NoteEntity noteEntity) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (isLandscape) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_list, NotesListFragment.ObjectWithStatic.newInstance(noteEntity))
+                    .commit();
+        } else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, NotesListFragment.ObjectWithStatic.newInstance(noteEntity))
                     .commit();
         }
     }
