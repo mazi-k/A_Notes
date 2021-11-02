@@ -2,26 +2,28 @@ package com.example.a_notes.ui
 
 import android.content.Context
 import android.content.DialogInterface
-import androidx.recyclerview.widget.RecyclerView
-import com.example.a_notes.domain.NotesRepository
-import com.example.a_notes.ui.NotesAdapter
-import com.example.a_notes.domain.NoteEntity
-import com.example.a_notes.ui.NotesListFragment
 import android.os.Bundle
-import android.view.*
-import com.example.a_notes.R
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.view.View.OnCreateContextMenuListener
+import android.view.ContextMenu
 import android.view.ContextMenu.ContextMenuInfo
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.a_notes.R
+import com.example.a_notes.databinding.FragmentNotesListBinding
 import com.example.a_notes.domain.App
-import java.lang.IllegalStateException
+import com.example.a_notes.domain.NoteEntity
+import com.example.a_notes.domain.NotesRepository
 
 class NotesListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var notesRepository: NotesRepository
+
+    private lateinit var binding: FragmentNotesListBinding
 
     private val adapter = NotesAdapter { note: NoteEntity -> showNoteContextMenu(note) }
 
@@ -47,26 +49,28 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecycleView(view)
-        initNewNoteButton(view)
+
+        binding = FragmentNotesListBinding.bind(view)
+
+        initRecycleView()
+        initNewNoteButton()
     }
 
-    private fun initRecycleView(view: View) {
-        recyclerView = view.findViewById(R.id.recycler_view_note_list)
-        recyclerView.setLayoutManager(LinearLayoutManager(context))
-        recyclerView.setOnCreateContextMenuListener(OnCreateContextMenuListener { menu: ContextMenu?, v: View?, menuInfo: ContextMenuInfo? ->
+    private fun initRecycleView() {
+        recyclerView = binding.recyclerViewNoteList
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setOnCreateContextMenuListener { menu: ContextMenu?, v: View?, menuInfo: ContextMenuInfo? ->
             activity!!.menuInflater.inflate(
                 R.menu.context_menu,
                 menu
             )
-        })
-        recyclerView.setAdapter(adapter)
-        adapter.setData(notesRepository!!.notes)
+        }
+        recyclerView.adapter = adapter
+        adapter.setData(notesRepository.notes)
     }
 
-    private fun initNewNoteButton(view: View) {
-        view.findViewById<View>(R.id.new_note_button)
-            .setOnClickListener { v: View? -> createNewNote() }
+    private fun initNewNoteButton() {
+        binding.newNoteButton.setOnClickListener { createNewNote() }
     }
 
     private fun updateSelectedNote(note: NoteEntity) {
@@ -78,7 +82,7 @@ class NotesListFragment : Fragment() {
     }
 
     private val updatedNote: Unit
-        private get() {
+        get() {
             var noteEntity: NoteEntity? = null
             if (arguments != null) {
                 noteEntity = arguments!!.getParcelable(UPDATE_NOTE_KEY)
@@ -86,35 +90,35 @@ class NotesListFragment : Fragment() {
             if (noteEntity != null) {
                 when (NOTE_ACTION) {
                     NOTE_ACTION_CREATE -> {
-                        notesRepository!!.createNote(noteEntity)
-                        adapter.setData(notesRepository!!.notes)
+                        notesRepository.createNote(noteEntity)
+                        adapter.setData(notesRepository.notes)
                     }
                     NOTE_ACTION_UPDATE -> {
-                        notesRepository!!.updateNote(noteIdToChanging, noteEntity)
-                        adapter.setData(notesRepository!!.notes)
+                        notesRepository.updateNote(noteIdToChanging, noteEntity)
+                        adapter.setData(notesRepository.notes)
                     }
                 }
             }
         }
 
     private fun showNoteContextMenu(note: NoteEntity) {
-        recyclerView!!.setOnCreateContextMenuListener { menu: ContextMenu, v: View?, menuInfo: ContextMenuInfo? ->
+        recyclerView.setOnCreateContextMenuListener { menu: ContextMenu, v: View?, menuInfo: ContextMenuInfo? ->
             activity!!.menuInflater.inflate(R.menu.context_menu, menu)
-            menu.findItem(R.id.action_delete).setOnMenuItemClickListener { item: MenuItem? ->
+            menu.findItem(R.id.action_delete).setOnMenuItemClickListener {
                 showAlertForDeletingNote(note)
                 true
             }
-            menu.findItem(R.id.action_update).setOnMenuItemClickListener { item: MenuItem? ->
+            menu.findItem(R.id.action_update).setOnMenuItemClickListener {
                 updateSelectedNote(note)
                 true
             }
         }
-        recyclerView!!.showContextMenu()
+        recyclerView.showContextMenu()
     }
 
     private fun deleteNote(note: NoteEntity) {
-        notesRepository!!.deleteNote(note.id)
-        adapter.setData(notesRepository!!.notes)
+        notesRepository.deleteNote(note.id)
+        adapter.setData(notesRepository.notes)
         adapter.notifyDataSetChanged()
     }
 
@@ -122,12 +126,12 @@ class NotesListFragment : Fragment() {
         AlertDialog.Builder(activity!!)
             .setTitle(R.string.alert)
             .setMessage(R.string.message)
-            .setPositiveButton(R.string.answer_yes) { dialog: DialogInterface?, which: Int ->
+            .setPositiveButton(R.string.answer_yes) { _: DialogInterface?, _: Int ->
                 deleteNote(
                     note
                 )
             }
-            .setNegativeButton(R.string.answer_no) { dialog: DialogInterface?, which: Int ->
+            .setNegativeButton(R.string.answer_no) { _: DialogInterface?, _: Int ->
                 Toast.makeText(
                     activity, "Okay:)", Toast.LENGTH_SHORT
                 ).show()
@@ -136,7 +140,7 @@ class NotesListFragment : Fragment() {
     }
 
     private val app: App
-        private get() = requireActivity().application as App
+        get() = requireActivity().application as App
 
     internal interface Controller {
         fun showNote(noteEntity: NoteEntity?)
@@ -160,10 +164,9 @@ class NotesListFragment : Fragment() {
         }
 
 
-
     }
 
-    object ObjectWithStatic{
+    object ObjectWithStatic {
         @JvmStatic
         fun newInstance(noteEntity: NoteEntity?): NotesListFragment {
             val notesListFragment = NotesListFragment()
