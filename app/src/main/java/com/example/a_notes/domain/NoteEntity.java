@@ -7,14 +7,14 @@ import androidx.annotation.Nullable;
 
 public class NoteEntity implements Parcelable {
 
-    @Nullable
     private Integer id;
 
     private String title;
     private String content;
     private String date;
 
-    public NoteEntity(String title, String content, String date) {
+    public NoteEntity(Integer id, String title, String content, String date) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.date = date;
@@ -59,7 +59,7 @@ public class NoteEntity implements Parcelable {
         return date;
     }
 
-    public void setId(@Nullable Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
